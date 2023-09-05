@@ -8,19 +8,16 @@ from sqlalchemy.orm import sessionmaker
 # SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 # Base = declarative_base()
 
-DATABASE = "mysql"
-USER = "user"
-PASSWORD = "password"
-HOST = "172.17.0.1"
-PORT = "3306"
-DB_NAME = "db"
+dialect = "mysql"
+driver = "mysqldb"
+username = "user"
+password = "password"
+host = "db"
 
-DATABASE_URL = "{}://{}:{}@{}:{}/{}".format(
-    DATABASE, USER, PASSWORD, HOST, PORT, DB_NAME
-)
-print(DATABASE_URL)
-
-Engine = create_engine(DATABASE_URL)
+database = "db"
+charset_type = "utf8"
+db_url = f"{dialect}+{driver}://{username}:{password}@{host}/{database}?charset={charset_type}"
+Engine = create_engine(db_url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=Engine)
 
 Base = declarative_base()
