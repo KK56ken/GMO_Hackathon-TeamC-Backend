@@ -11,4 +11,4 @@ services:
     volumes:
       - ./backend/api:/src
     environment:
-      - ENVIRON=dev
+      - ENVIRON
