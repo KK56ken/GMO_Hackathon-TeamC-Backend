@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-  
   demo-api:
     build:
       context: "./backend"
@@ -11,4 +10,25 @@ services:
     volumes:
       - ./backend/api:/src
     environment:
-      - ENVIRON
+      - ENVIRON=dev
+  mysql:
+    image: mysql:8.0.27
+    platform: linux/amd64
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    restart: always
+    networks:
+      - mysql-network
+  cli:
+    image: mysql:8.0.27
+    networks:
+      - mysql-network
+    command: mysql -hmysql -uuser -ppassword db
+networks:
+  mysql-network:
+    driver: bridge
