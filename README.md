@@ -6,4 +6,4 @@ cd GMO_Hackson-TeamC-Backend
 
 export ENVIRON='dev'
 
-docker copose up --build -d
+docker compose up --build -d
