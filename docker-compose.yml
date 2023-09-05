@@ -11,6 +11,8 @@ services:
       - ./backend/api:/src
     environment:
       - ENVIRON=dev
+    depends_on:
+      - db
     networks:
       - mysql-network
   db:
