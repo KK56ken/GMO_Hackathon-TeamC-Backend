@@ -5,6 +5,11 @@ from starlette.status import HTTP_403_FORBIDDEN
 from routers import test
 from util import util
 
+
+from . import schemas, models
+from database import engine, Base, SessionLocal
+from sqlalchemy.orm import Session
+
 correct_key: str = util.get_apikey()
 api_key_header = APIKeyHeader(name='Authorization', auto_error=False)
 
@@ -20,6 +25,15 @@ async def get_api_key(
 
 app = FastAPI()
 app.include_router(test.router, dependencies=[Depends(get_api_key)], tags=["Test"])
+
+models.Base.metadata.create_all(engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 def read_root():
