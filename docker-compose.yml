@@ -10,7 +10,7 @@ services:
     volumes:
       - ./backend/api:/src
     environment:
-      - ENVIRON=
+      - ENVIRON=dev
     depends_on:
       - db
     networks:
