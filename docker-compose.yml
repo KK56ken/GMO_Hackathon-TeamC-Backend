@@ -11,7 +11,11 @@ services:
       - ./backend/api:/src
     environment:
       - ENVIRON=dev
-  mysql:
+    depends_on:
+      - db
+    networks:
+      - mysql-network
+  db:
     image: mysql:8.0.27
     ports:
       - "3306:3306"
@@ -21,13 +25,19 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     restart: always
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
       - mysql-network
+    command: --default-authentication-plugin=mysql_native_password
   cli:
     image: mysql:8.0.27
     networks:
       - mysql-network
     command: mysql -hmysql -uuser -ppassword db
+volumes:
+  mysql-data:
+    driver: local
 networks:
   mysql-network:
     driver: bridge
