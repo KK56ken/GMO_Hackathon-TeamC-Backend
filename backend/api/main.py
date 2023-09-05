@@ -50,3 +50,11 @@ async def authorization(db: Session = Depends(get_db), request: schemas.User):
     db.commit()
     db.refresh(new_user)
     return 
+
+@app.get("/profile")
+def showAllUsers(db: Session = Depends(get_db)):
+    users = []
+    tmp_users = db.query(models.User.id, models.User.name, models.User.status)
+    for user in tmp_users:
+        titles = db.query(model.Task.title).filter(user_id = user.id).all
+    return
