@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  
+  demo-api:
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile"
+    ports:
+      - 8000:8000 
+    volumes:
+      - ./backend/api:/src
+    environment:
+      - ENVIRON
