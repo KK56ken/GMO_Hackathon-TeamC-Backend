@@ -6,7 +6,8 @@ cd GMO_Hackson-TeamC-Backend
 
 docker copose up --build -d
 
-#上記コマンドを実行後30秒くらい待って以下を実行
+上記コマンドを実行後30秒くらい待って以下を実行
 docker-compose run cli
+
 
 
