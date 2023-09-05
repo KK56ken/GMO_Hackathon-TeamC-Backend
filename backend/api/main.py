@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Security
+from fastapi import Depends, FastAPI, HTTPException, Security, Body
 from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
 
@@ -39,3 +39,10 @@ def get_db():
 def read_root():
     return {"status": "ok"}
 
+@app.post("/auth")
+async def authorization(db: Session = Depends(get_db), request: schemas.User):
+    new_user = models.User(email=request.email, password=request.password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return 
