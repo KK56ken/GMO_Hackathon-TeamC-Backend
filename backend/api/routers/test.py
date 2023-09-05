@@ -3,8 +3,15 @@ from typing import Dict, List, TypedDict
 
 from fastapi import APIRouter, Depends, HTTPException
 
-ENVIRON = os.environ['ENVIRON']
+import platform
 
+system_name = platform.system()
+
+if system_name == 'Windows':
+    ENVIRON = os.environ.get('ENVIRON', 'dev')
+elif system_name == 'Darwin':
+    ENVIRON = os.environ['ENVIRON']
+	
 router = APIRouter()
 
 
