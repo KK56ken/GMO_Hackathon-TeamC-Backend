@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException, Security, Body
 from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
 from passlib.context import CryptContext
+from typing import List
 
 from routers import test
 from util import util
@@ -53,9 +54,14 @@ async def authorization(db: Session = Depends(get_db), request: schemas.User):
 
 @app.get("/profile")
 def showAllUsers(db: Session = Depends(get_db)):
-    users = []
+    users = List[schemas.ShowUser]
     tmp_users = db.query(models.User.id, models.User.name, models.User.status)
     for user in tmp_users:
         titles = db.query(models.Task.title).filter(user_id = user.id).all
-
-    return
+        tmp_showuser = schemas.ShowUser
+        tmp_showuser.user_id = user.user_id
+        tmp_showuser.user_name = user.name
+        tmp_showuser.status = user.status
+        tmp_showuser.tasks = titles
+        users.append(tmp_showuser)
+    return users
