@@ -13,6 +13,16 @@ class Task(BaseModel):
     skill_set: List[str]
     task_date: datetime
     concern_desc: str
+
+class TaskDetail(BaseModel):
+    title: str
+    user_name: str
+    task_date: datetime
+    skill_set: List[str]
+    concern_desc: str
+    task_detail: str
+    ticket_link: str
+    slack_link: str
       
 class ShowUser(BaseModel):
     user_id:int
