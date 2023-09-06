@@ -1,6 +1,7 @@
-from fastapi import Depends, FastAPI, HTTPException, Security
+from fastapi import Depends, FastAPI, HTTPException, Security, Body
 from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
+from passlib.context import CryptContext
 
 import models
 from routers import test
@@ -39,18 +40,14 @@ def get_db():
 def read_root():
     return {"status": "ok"}
 
-@app.post("/users")
-async def create_user(user: schemas.Users, db: Session = Depends(get_db)):
-    db_user = models.User(
-        name=user.name,
-        email=user.email,
-        password=user.password,
-        token=user.token,
-        status=user.status,
-        department_id=user.department_id,
-        slack_id=user.slack_id
-    )
-    db.add(db_user)
+pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+@app.post("/auth")
+async def authorization(db: Session = Depends(get_db), request: schemas.User):
+    hashdPasswoed = pwd_cxt.hash(request.password)
+    new_user = models.User(email=request.email, password=hashdPasswoed)
+    db.add(new_user)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(new_user)
+    return 
+
