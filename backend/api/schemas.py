@@ -15,6 +15,20 @@ class Task(BaseModel):
     concern_desc: str
     class Config():
         orm_mode = True
+
+
+class TaskDetail(BaseModel):
+    title: str
+    user_name: str
+    task_date: datetime
+    skill_set: List[str]
+    concern_desc: str
+    task_detail: str
+    ticket_link: str
+    slack_link: str
+    class Config():
+        orm_mode = True
+
       
 class ShowUser(BaseModel):
     user_id:int

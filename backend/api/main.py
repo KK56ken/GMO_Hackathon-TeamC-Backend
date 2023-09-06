@@ -89,3 +89,13 @@ async def get_task_list(db: Session = Depends(get_db)):
         task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user_name, skill_set=skill_set, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
     return tasks
+
+@app.get("/task/{id}")
+async def get_task_detail(id:int, db: Session = Depends(get_db)):
+    tmp_task = db.query(models.Task.user_id, models.Task.title, models.Task.register_date, models.Task.concern_desc, models.Task.task_detail, models.Task.ticket_link).filter(models.Task.task_id == id).first()
+    tmp_user = db.query(models.User.name, models.User.slack_id).filter(models.User.user_id == task.user_id).first()
+    tmp_skill_ids = db.query(models.TasksSkill.skill_id).filter(models.TasksSkill.task_id == id).all()
+    skills = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(tmp_skill_ids)).all()
+    task = schemas.TaskDetail(title = tmp_task.title, user_name = tmp_user.name, skill_set = skills, concern_desc = tmp_task.concern_desc, task_detail = tmp_task.task_detail, ticket_link = tmp_task.ticket_link, slack_link = tmp_user.slack_link)
+    return task
+
