@@ -56,5 +56,6 @@ def showAllUsers(db: Session = Depends(get_db)):
     users = []
     tmp_users = db.query(models.User.id, models.User.name, models.User.status)
     for user in tmp_users:
-        titles = db.query(model.Task.title).filter(user_id = user.id).all
+        titles = db.query(models.Task.title).filter(user_id = user.id).all
+
     return
