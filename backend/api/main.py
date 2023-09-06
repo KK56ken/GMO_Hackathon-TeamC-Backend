@@ -4,12 +4,12 @@ from starlette.status import HTTP_403_FORBIDDEN
 from passlib.context import CryptContext
 from typing import List
 
+import models
 from routers import test
 from util import util
 
-
-from . import schemas, models
-from database import engine, Base, SessionLocal
+import schemas
+from database import Engine, Base, SessionLocal
 from sqlalchemy.orm import Session
 
 correct_key: str = util.get_apikey()
@@ -28,7 +28,7 @@ async def get_api_key(
 app = FastAPI()
 app.include_router(test.router, dependencies=[Depends(get_api_key)], tags=["Test"])
 
-models.Base.metadata.create_all(engine)
+Base.metadata.create_all(Engine)
 
 def get_db():
     db = SessionLocal()
@@ -44,7 +44,7 @@ def read_root():
 pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @app.post("/auth")
-async def authorization(db: Session = Depends(get_db), request: schemas.User):
+async def authorization(request: schemas.User, db: Session = Depends(get_db)):
     hashdPasswoed = pwd_cxt.hash(request.password)
     new_user = models.User(email=request.email, password=hashdPasswoed)
     db.add(new_user)
