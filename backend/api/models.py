@@ -16,7 +16,7 @@ class Task(Base):
     task_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
     title = Column(String(255))
-    tasks_detail = Column(String(255))
+    task_detail = Column(String(255))
     concern_desc = Column(String(255))
     ticket_link = Column(String(255))
     end_flag = Column(Integer)

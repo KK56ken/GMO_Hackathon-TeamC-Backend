@@ -6,19 +6,35 @@ class User(BaseModel):
     email:str
     password:str
 
-class Tasks(BaseModel):
+class Task(BaseModel):
     task_id: int
     title: str
     user_name: str
     skill_set: List[str]
     task_date: datetime
     concern_desc: str
+    class Config():
+        orm_mode = True
+
+
+class TaskDetail(BaseModel):
+    title: str
+    user_name: str
+    task_date: datetime
+    skill_set: List[str]
+    concern_desc: str
+    task_detail: str
+    ticket_link: str
+    slack_link: str
+    class Config():
+        orm_mode = True
+
       
 class ShowUser(BaseModel):
     user_id:int
     user_name:str
     status:int
-    tasks:str
+    tasks: List[str]
 
     class Config():
         orm_mode = True
