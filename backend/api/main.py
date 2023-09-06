@@ -78,27 +78,24 @@ async def get_profile(id: int, db: Session = Depends(get_db)):
 
 @app.get("/profile")
 async def show_all_users(db: Session = Depends(get_db)):
-    users = List[schemas.ShowUser]
-    tmp_users = db.query(models.User.id, models.User.name, models.User.status)
+    users = []
+    tmp_users = db.query(models.User.user_id, models.User.name, models.User.status)
     for user in tmp_users:
-        titles = db.query(models.Task.title).filter(user_id = user.id).all
-        tmp_showuser = schemas.ShowUser
-        tmp_showuser.user_id = user.user_id
-        tmp_showuser.user_name = user.name
-        tmp_showuser.status = user.status
-        tmp_showuser.tasks = titles
+        titles = db.query(models.Task.title).filter(models.Task.user_id == user.user_id).all()
+        tmp_showuser = schemas.ShowUser(user_id=user.user_id, user_name=user.name, status=user.status, tasks=titles)
         users.append(tmp_showuser)
     return users
 
 @app.get("/task")
 async def get_task_list(db: Session = Depends(get_db)):
     tmp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).all()
+    print(type(tmp_tasks))
     tasks = List[schemas.Task]
     for tmp_task in tmp_tasks:
         task = schemas.Task
         task.task_id = tmp_task.task_id
         task.title = tmp_task.title
-        task.user_name = db.query(models.User.name).filter(models.User.user_id = tmp_task.user_id).first()
+        task.user_name = db.query(models.User.name).filter(user_id = tmp_task.user_id).first()
         skill_set_id = db.query(models.UserSkill.skill_id).filter(models.TaskSkill.task_id == tmp_task.task_id).all()
         task.skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
         task.task_date = tmp_task.register_date
