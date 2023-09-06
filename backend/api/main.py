@@ -42,6 +42,8 @@ async def signup(request: schemas.User, db: Session = Depends(get_db)):
 @app.get("/profile/{id}")
 async def get_profile(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User.name, models.User.department_id, models.User.slack_id, models.User.status).filter(models.User.user_id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     skill_set_id = db.query(models.UsersSkill.skill_id).filter(models.UsersSkill.user_id == id).all()
     skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
     department = db.query(models.Department.department_name).filter(models.Department.department_id == user.department_id).first()
@@ -80,9 +82,10 @@ async def get_task_list(db: Session = Depends(get_db)):
 @app.get("/task/{id}")
 async def get_task_detail(id:int, db: Session = Depends(get_db)):
     tmp_task = db.query(models.Task.user_id, models.Task.title, models.Task.register_date, models.Task.concern_desc, models.Task.task_detail, models.Task.ticket_link).filter(models.Task.task_id == id).first()
-    tmp_user = db.query(models.User.name, models.User.slack_id).filter(models.User.user_id == task.user_id).first()
+    if tmp_task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    tmp_user = db.query(models.User.name, models.User.slack_id).filter(models.User.user_id == tmp_task.user_id).first()
     tmp_skill_ids = db.query(models.TasksSkill.skill_id).filter(models.TasksSkill.task_id == id).all()
     skills = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(tmp_skill_ids)).all()
     task = schemas.TaskDetail(title = tmp_task.title, user_name = tmp_user.name, skill_set = skills, concern_desc = tmp_task.concern_desc, task_detail = tmp_task.task_detail, ticket_link = tmp_task.ticket_link, slack_link = tmp_user.slack_link)
     return task
-
