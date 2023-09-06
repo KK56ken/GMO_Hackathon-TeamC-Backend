@@ -9,7 +9,7 @@ class User(BaseModel):
 class ShowUser(BaseModel):
     user_id:int
     user_name:str
-    status:str
+    status:int
     tasks:str
     class Config():
         orm_mode = True
