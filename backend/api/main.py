@@ -43,8 +43,8 @@ def read_root():
 
 pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-@app.post("/auth")
-async def authorization(request: schemas.User, db: Session = Depends(get_db)):
+@app.post("/signup")
+async def signup(request: schemas.User, db: Session = Depends(get_db)):
     hashdPasswoed = pwd_cxt.hash(request.password)
     new_user = models.User(email=request.email, password=hashdPasswoed)
     db.add(new_user)
