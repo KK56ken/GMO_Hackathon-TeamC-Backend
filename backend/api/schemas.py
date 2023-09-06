@@ -6,7 +6,7 @@ class User(BaseModel):
     email:str
     password:str
 
-class Tasks(BaseModel):
+class Task(BaseModel):
     task_id: int
     title: str
     user_name: str
