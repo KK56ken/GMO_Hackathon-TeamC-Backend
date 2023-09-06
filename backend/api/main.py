@@ -89,3 +89,9 @@ async def get_task_detail(id:int, db: Session = Depends(get_db)):
     skills = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(tmp_skill_ids)).all()
     task = schemas.TaskDetail(title = tmp_task.title, user_name = tmp_user.name, skill_set = skills, concern_desc = tmp_task.concern_desc, task_detail = tmp_task.task_detail, ticket_link = tmp_task.ticket_link, slack_link = tmp_user.slack_link)
     return task
+
+@app.delete("/task/{id}")
+async def delete_task(id:int, db: Session = Depends(get_db)):
+    db.query(models.Task).filter(models.Task.task_id == id).delete()
+    db.commit()
+    return
