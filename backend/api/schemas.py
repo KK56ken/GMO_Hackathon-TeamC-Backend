@@ -5,6 +5,14 @@ class User(BaseModel):
     email:str
     password:str
 
+class ShowUser(BaseModel):
+    user_id:int
+    user_name:str
+    status:int
+    tasks:str
+    class Config():
+        orm_mode = True
+
 # class Users(BaseModel):
 #     user_id: int
 #     name: str
