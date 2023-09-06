@@ -39,6 +39,16 @@ class ShowUser(BaseModel):
     class Config():
         orm_mode = True
 
+class CreateTask(BaseModel):
+    title:str
+    task_date: datetime
+    skill_set:List[str]
+    concern_desc: str
+    task_detail: str
+    ticket_link: str
+    class Config():
+        orm_mode = True
+
 # class Users(BaseModel):
 #     user_id: int
 #     name: str

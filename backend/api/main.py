@@ -86,3 +86,14 @@ async def get_task_detail(id:int, db: Session = Depends(get_db)):
     task = schemas.TaskDetail(title = tmp_task.title, user_name = tmp_user.name, skill_set = skills, concern_desc = tmp_task.concern_desc, task_detail = tmp_task.task_detail, ticket_link = tmp_task.ticket_link, slack_link = tmp_user.slack_link)
     return task
 
+@app.post("/task")
+async def signup(request: schemas.CreateTask, db: Session = Depends(get_db)):
+    new_task = models.Task(title = request.title, task_detail = request.task_detail, concern_desc = request.concern_desc, ticket_link = request.ticket_link, register_date = request.task_date)
+    db.add(new_task)
+    db.refresh(new_task)
+    for skill in request.skill_set:
+        new_taskskill = models.TasksSkill(task_id = new_task.task_id, skill_id = skill)
+        db.add(new_taskskill)
+        db.commit()
+        db.refresh(new_taskskill)
+    return new_task.task_id
