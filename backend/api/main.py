@@ -3,12 +3,12 @@ from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
 from passlib.context import CryptContext
 
+import models
 from routers import test
 from util import util
 
-
-from . import schemas, models
-from database import engine, Base, SessionLocal
+import schemas
+from database import Engine, Base, SessionLocal
 from sqlalchemy.orm import Session
 
 correct_key: str = util.get_apikey()
@@ -27,7 +27,7 @@ async def get_api_key(
 app = FastAPI()
 app.include_router(test.router, dependencies=[Depends(get_api_key)], tags=["Test"])
 
-models.Base.metadata.create_all(engine)
+Base.metadata.create_all(Engine)
 
 def get_db():
     db = SessionLocal()
@@ -50,3 +50,4 @@ async def authorization(db: Session = Depends(get_db), request: schemas.User):
     db.commit()
     db.refresh(new_user)
     return 
+
