@@ -16,7 +16,6 @@ class Task(BaseModel):
     class Config():
         orm_mode = True
 
-
 class TaskDetail(BaseModel):
     title: str
     user_name: str
@@ -28,7 +27,6 @@ class TaskDetail(BaseModel):
     slack_link: str
     class Config():
         orm_mode = True
-
       
 class ShowUser(BaseModel):
     user_id:int
@@ -42,12 +40,23 @@ class ShowUser(BaseModel):
 class CreateTask(BaseModel):
     title:str
     task_date: datetime
-    skill_set:List[str]
+    skill_set:List[int]
     concern_desc: str
     task_detail: str
     ticket_link: str
+    token: str
     class Config():
         orm_mode = True
+
+class DBCreateTask(BaseModel):
+    user_id:int
+    title:str
+    task_detail: str
+    concern_desc: str
+    ticket_link: str
+    end_flag: int
+    register_date: datetime
+    end_date: datetime
 
 # class Users(BaseModel):
 #     user_id: int

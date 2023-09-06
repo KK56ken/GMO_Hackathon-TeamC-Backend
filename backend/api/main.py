@@ -87,9 +87,17 @@ async def get_task_detail(id:int, db: Session = Depends(get_db)):
     return task
 
 @app.post("/task")
-async def signup(request: schemas.CreateTask, db: Session = Depends(get_db)):
-    new_task = models.Task(title = request.title, task_detail = request.task_detail, concern_desc = request.concern_desc, ticket_link = request.ticket_link, register_date = request.task_date)
+async def create_task(request: schemas.CreateTask, db: Session = Depends(get_db)):
+    #new_task = models.Task(title = request.title, task_detail = request.task_detail, concern_desc = request.concern_desc, ticket_link = request.ticket_link, register_date = request.task_date)
+
+    user = db.query(models.User).filter(models.User.token == request.token).first()
+    if user is None:
+        raise HTTPException(status_code=403, detail="Invalid token")
+    user_id = user.user_id
+    new_task = models.Task(user_id=user_id, title = request.title, task_detail = request.task_detail, end_flag=0, concern_desc = request.concern_desc, ticket_link = request.ticket_link, register_date=request.task_date, end_date=request.task_date)
+    
     db.add(new_task)
+    db.commit()
     db.refresh(new_task)
     for skill in request.skill_set:
         new_taskskill = models.TasksSkill(task_id = new_task.task_id, skill_id = skill)
