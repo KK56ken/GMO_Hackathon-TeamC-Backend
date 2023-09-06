@@ -13,6 +13,9 @@ class Task(BaseModel):
     skill_set: List[str]
     task_date: datetime
     concern_desc: str
+    class Config():
+        orm_mode = True
+
 
 class TaskDetail(BaseModel):
     title: str
@@ -23,12 +26,15 @@ class TaskDetail(BaseModel):
     task_detail: str
     ticket_link: str
     slack_link: str
+    class Config():
+        orm_mode = True
+
       
 class ShowUser(BaseModel):
     user_id:int
     user_name:str
     status:int
-    tasks:str
+    tasks: List[str]
 
     class Config():
         orm_mode = True
