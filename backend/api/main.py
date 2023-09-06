@@ -3,6 +3,7 @@ from fastapi.security.api_key import APIKeyHeader, APIKey
 from starlette.status import HTTP_403_FORBIDDEN
 from passlib.context import CryptContext
 from typing import List
+import bcrypt
 
 import models
 from util import util
@@ -31,8 +32,8 @@ pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @app.post("/signup")
 async def signup(request: schemas.User, db: Session = Depends(get_db)):
-    hashdPasswoed = pwd_cxt.hash(request.password)
-    new_user = models.User(email=request.email, password=hashdPasswoed)
+    hashdPassword = pwd_cxt.hash(request.password)
+    new_user = models.User(email=request.email, password=hashdPassword)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
