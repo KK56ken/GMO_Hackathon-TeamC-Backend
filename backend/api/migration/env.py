@@ -4,6 +4,10 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+# 追加
+from database import Base
+# 追加
+from models import User
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -18,7 +22,10 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+# 削除
+# target_metadata = None
+# 追加
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -62,9 +69,13 @@ def run_migrations_online() -> None:
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
+    # 追加
+    url = config.get_main_option("sqlalchemy.url")
 
     with connectable.connect() as connection:
         context.configure(
+            # 追加
+            url=url,
             connection=connection, target_metadata=target_metadata
         )
 
