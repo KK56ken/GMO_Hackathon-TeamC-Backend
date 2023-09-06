@@ -81,16 +81,11 @@ async def show_all_users(db: Session = Depends(get_db)):
 @app.get("/task")
 async def get_task_list(db: Session = Depends(get_db)):
     tmp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).all()
-    print(type(tmp_tasks))
     tasks = []
     for tmp_task in tmp_tasks:
-        task = schemas.Task
-        task.task_id = tmp_task.task_id
-        task.title = tmp_task.title
-        task.user_name = db.query(models.User.name).filter(user_id = tmp_task.user_id).first()
+        user_name = db.query(models.User.name).filter(user_id = tmp_task.user_id).first()
         skill_set_id = db.query(models.UserSkill.skill_id).filter(models.TaskSkill.task_id == tmp_task.task_id).all()
-        task.skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
-        task.task_date = tmp_task.register_date
-        task.concern_desc = tmp_task.concern_desc
+        skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
+        task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user_name, skill_set=skill_set, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
     return tasks
