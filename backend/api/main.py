@@ -75,3 +75,17 @@ async def get_profile(id: int, db: Session = Depends(get_db)):
         tasks.append(task)
     
     return {"name": user.name, "department": department, "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
+
+@app.get("/profile")
+def showAllUsers(db: Session = Depends(get_db)):
+    users = List[schemas.ShowUser]
+    tmp_users = db.query(models.User.id, models.User.name, models.User.status)
+    for user in tmp_users:
+        titles = db.query(models.Task.title).filter(user_id = user.id).all
+        tmp_showuser = schemas.ShowUser
+        tmp_showuser.user_id = user.user_id
+        tmp_showuser.user_name = user.name
+        tmp_showuser.status = user.status
+        tmp_showuser.tasks = titles
+        users.append(tmp_showuser)
+    return users

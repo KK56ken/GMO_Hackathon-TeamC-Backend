@@ -13,6 +13,13 @@ class Tasks(BaseModel):
     skill_set: List[str]
     task_date: datetime
     concern_desc: str
+      
+class ShowUser(BaseModel):
+    user_id:int
+    user_name:str
+    status:int
+    tasks:str
+
     class Config():
         orm_mode = True
 
