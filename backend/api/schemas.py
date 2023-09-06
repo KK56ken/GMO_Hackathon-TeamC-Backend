@@ -1,9 +1,20 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List
 
 class User(BaseModel):
     email:str
     password:str
+
+class Tasks(BaseModel):
+    task_id: int
+    title: str
+    user_name: str
+    skill_set: List[str]
+    task_date: datetime
+    concern_desc: str
+    class Config():
+        orm_mode = True
 
 # class Users(BaseModel):
 #     user_id: int
