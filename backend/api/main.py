@@ -92,6 +92,10 @@ async def get_task_detail(id:int, db: Session = Depends(get_db)):
 
 @app.delete("/task/{id}")
 async def delete_task(id:int, db: Session = Depends(get_db)):
-    db.query(models.Task).filter(models.Task.task_id == id).delete()
+    task = db.query(models.Task).filter(models.Task.task_id == id).first()
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    db.delete(task)
     db.commit()
+    db.close()
     return
