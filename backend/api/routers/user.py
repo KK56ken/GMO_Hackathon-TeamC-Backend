@@ -6,9 +6,12 @@ router = APIRouter(tags=["User"])
 
 
 @router.get("/profile")
-async def show_all_users(db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+async def show_all_users(db: Session = Depends(database.get_db), current_user: dict = Depends(oauth2.get_current_user)):
     users = []
-    tmp_users = db.query(models.User.user_id, models.User.name, models.User.status)
+    user_id = current_user.user_id
+    tmp_users = db.query(models.User.user_id, models.User.name, models.User.status).filter(models.User.user_id != user_id).all()
+    if tmp_users is None:
+        raise HTTPException(status_code=404, detail="User not found")
     for user in tmp_users:
         titles = db.query(models.Task.title).filter(models.Task.user_id == user.user_id).all()
         tmp_showuser = schemas.ShowUser(user_id=user.user_id, user_name=user.name, status=user.status, tasks=titles)
