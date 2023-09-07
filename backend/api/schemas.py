@@ -58,12 +58,20 @@ class DBCreateTask(BaseModel):
     register_date: datetime
     end_date: datetime
 
+class ChangeProfile(BaseModel):
+    user_name:str
+    status:int
+    department_id: int
+    slack_id: int
+    skill_set: List[int]
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class TokenData(BaseModel):
     email: Optional[str] = None
+
 
 # class Users(BaseModel):
 #     user_id: int

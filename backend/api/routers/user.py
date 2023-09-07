@@ -33,3 +33,19 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
         task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user.name, skill_set=task_skill, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
     return {"name": user.name, "department": department, "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
+
+@router.put("/profile/{id}")
+async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db)):
+    user = db.query(models.User).filter(models.User.user_id == id).first()
+    user.name = request.user_name
+    user.status = request.status
+    user.department_id = request.department_id
+    user.slack_id = request.slack_id
+    db.commit()
+    for skill_id in request.skill_set:
+        if (None == db.query(models.UsersSkill.user_id).filter(models.UsersSkill.user_id == user.user_id, models.UsersSkill.skill_id == skill_id).first()):
+            new_userskill = models.UsersSkill(user_id = user.user_id, skill_id = skill_id)
+            db.add(new_userskill)
+            db.commit()
+            db.refresh(new_userskill)
+    return 'ok'
