@@ -25,7 +25,9 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     skill_set_id = db.query(models.UsersSkill.skill_id).filter(models.UsersSkill.user_id == id).all()
-    skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
+    flat_skill_ids = [item[0] for item in skill_set_id]
+    skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
+    flat_skill_set = [item[0] for item in skill_set]
     department = db.query(models.Department.department_name).filter(models.Department.department_id == user.department_id).first()
    
     temp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).filter(models.Task.user_id == id).all()
@@ -37,7 +39,7 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
         flat_task_skill = [item[0] for item in task_skill]
         task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user.name, skill_set=flat_task_skill, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
-    return {"name": user.name, "department": str(department), "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
+    return {"name": user.name, "department": str(department), "skill_set": flat_skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
 
 @router.put("/profile/{id}")
 async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
