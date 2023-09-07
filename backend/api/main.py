@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from typing import List
 from database import Engine, Base
-import routers
+from routers import authentication, task, user
 
 app = FastAPI()
-app.include_router(routers.authentication.router)
-app.include_router(routers.task.router)
-app.include_router(routers.user.router)
+app.include_router(authentication.router)
+app.include_router(task.router)
+app.include_router(user.router)
 
 Base.metadata.create_all(Engine)
 
