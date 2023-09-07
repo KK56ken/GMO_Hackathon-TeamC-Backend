@@ -49,7 +49,6 @@ class UsersSkill(Base):
 def main():
     # テーブルが存在しなければ、テーブルを作成
     Base.metadata.create_all(bind=Engine)
-    print("テーブル作成完了")
 
 if __name__ == "__main__":
     main()
