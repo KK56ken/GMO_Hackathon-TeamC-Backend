@@ -56,10 +56,12 @@ async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Dep
     return 'ok'
 
 @router.patch("/profile/{id}")
-async def update_status(id: int, request : schemas.UserStatus, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+async def update_profile(id: int, request : schemas.UpdateProfile, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(models.User.user_id == id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    user.status = request.status
+    for field, value in request.model_dump(exclude_unset=True).items():
+        setattr(user, field, value)
     db.commit()
+    db.refresh(user)
     return 'ok'

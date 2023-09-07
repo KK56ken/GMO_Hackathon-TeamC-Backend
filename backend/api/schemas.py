@@ -80,8 +80,12 @@ class SignUp(BaseModel):
     skill_set: List[int]
     slack_id: str
 
-class UserStatus(BaseModel):
-    status: int
+class UpdateProfile(BaseModel):
+    name: Optional[str] = None
+    status: Optional[int] = None
+    department_id: Optional[int] = None
+    skill_set: Optional[List[int]] = None
+    slack_id: Optional[str] = None
 
 # class Users(BaseModel):
 #     user_id: int
