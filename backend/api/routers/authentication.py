@@ -13,9 +13,11 @@ pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/signup")
-async def signup(request: schemas.User, db: Session = Depends(database.get_db)):
+async def signup(request: schemas.SignUp, db: Session = Depends(database.get_db)):
     hashedPassword = pwd_cxt.hash(request.password)
-    new_user = models.User(email=request.email, password=hashedPassword)
+    new_user = models.User(email=request.email, password=hashedPassword, name=request.name, department_id=request.department_id, slack_id=request.slack_id, status=request.status)
+    if db.query(models.User).filter(models.User.email == request.email).first():
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Email already registered")
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
