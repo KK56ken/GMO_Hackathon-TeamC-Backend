@@ -24,7 +24,7 @@ class TaskDetail(BaseModel):
     concern_desc: str
     task_detail: str
     ticket_link: str
-    slack_link: str
+    slack_id: str
     class Config():
         orm_mode = True
       
