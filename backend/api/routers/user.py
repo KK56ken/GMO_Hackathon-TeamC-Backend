@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, status, HTTPException
-import schemas, database, models
+import schemas, database, models, oauth2
 from sqlalchemy.orm import Session
 
 router = APIRouter(tags=["User"])
 
 
 @router.get("/profile")
-async def show_all_users(db: Session = Depends(database.get_db)):
+async def show_all_users(db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     users = []
     tmp_users = db.query(models.User.user_id, models.User.name, models.User.status)
     for user in tmp_users:
@@ -17,7 +17,7 @@ async def show_all_users(db: Session = Depends(database.get_db)):
 
 
 @router.get("/profile/{id}")
-async def get_profile(id: int, db: Session = Depends(database.get_db)):
+async def get_profile(id: int, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     user = db.query(models.User.name, models.User.department_id, models.User.slack_id, models.User.status).filter(models.User.user_id == id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")

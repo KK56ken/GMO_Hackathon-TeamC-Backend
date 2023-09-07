@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 class User(BaseModel):
     email:str
@@ -57,6 +57,13 @@ class DBCreateTask(BaseModel):
     end_flag: int
     register_date: datetime
     end_date: datetime
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
 
 # class Users(BaseModel):
 #     user_id: int
