@@ -35,7 +35,7 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
         task_skill = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(task_skill_ids)).all()
         task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user.name, skill_set=task_skill, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
-    return {"name": user.name, "department": department, "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
+    return {"name": user.name, "department": str(department), "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
 
 @router.put("/profile/{id}")
 async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db)):
