@@ -78,6 +78,7 @@ class SignUp(BaseModel):
     password: str
     status: int
     department_id: int
+    skill_set: List[int]
     slack_id: str
 
 # class Users(BaseModel):

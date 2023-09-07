@@ -21,6 +21,12 @@ async def signup(request: schemas.SignUp, db: Session = Depends(database.get_db)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    if request.skill_set is not None:
+        for skill in request.skill_set:
+            new_userskill = models.UsersSkill(user_id=new_user.user_id, skill_id=skill)
+            db.add(new_userskill)
+            db.commit()
+            db.refresh(new_userskill)
     return {"message": "User Created"}
 
 @router.post("/auth")
