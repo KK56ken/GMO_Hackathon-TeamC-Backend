@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(tags=["Skill"])
 
-@router.get("/get_skills")
+@router.get("/skill")
 async def get_skills_table(db: Session = Depends(database.get_db)):
 	skills = db.query(models.Skill).all()
 	return skills

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(tags=["Department"])
 
-@router.get("/get_departments")
+@router.get("/department")
 async def get_departments_table(db: Session = Depends(database.get_db)):
 	departments = db.query(models.Department).all()
 	return departments
