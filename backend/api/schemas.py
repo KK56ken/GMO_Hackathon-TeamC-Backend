@@ -72,6 +72,13 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+class SignUp(BaseModel):
+    name: str
+    email: str
+    password: str
+    status: int
+    department_id: int
+    slack_id: str
 
 # class Users(BaseModel):
 #     user_id: int
