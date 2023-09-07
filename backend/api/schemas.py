@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 class User(BaseModel):
     email:str
@@ -24,7 +24,7 @@ class TaskDetail(BaseModel):
     concern_desc: str
     task_detail: str
     ticket_link: str
-    slack_link: str
+    slack_id: str
     class Config():
         orm_mode = True
       
@@ -64,6 +64,14 @@ class ChangeProfile(BaseModel):
     department_id: int
     slack_id: int
     skill_set: List[int]
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
 
 # class Users(BaseModel):
 #     user_id: int
