@@ -35,7 +35,7 @@ class User(Base):
     name = Column(String(255))
     email = Column(String(255))
     password = Column(String(255))
-    token = Column(String(255))
+    # token = Column(String(255))
     status = Column(Integer)
     department_id = Column(Integer)
     slack_id = Column(String(255))
