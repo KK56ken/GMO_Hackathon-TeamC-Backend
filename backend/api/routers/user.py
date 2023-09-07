@@ -40,6 +40,8 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
 @router.put("/profile/{id}")
 async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db)):
     user = db.query(models.User).filter(models.User.user_id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     user.name = request.user_name
     user.status = request.status
     user.department_id = request.department_id
