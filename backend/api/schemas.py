@@ -80,6 +80,9 @@ class SignUp(BaseModel):
     skill_set: List[int]
     slack_id: str
 
+class UserStatus(BaseModel):
+    status: int
+
 # class Users(BaseModel):
 #     user_id: int
 #     name: str

@@ -38,7 +38,7 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
     return {"name": user.name, "department": str(department), "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
 
 @router.put("/profile/{id}")
-async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db)):
+async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(models.User.user_id == id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -53,4 +53,13 @@ async def set_profile(id: int, request: schemas.ChangeProfile, db: Session = Dep
             db.add(new_userskill)
             db.commit()
             db.refresh(new_userskill)
+    return 'ok'
+
+@router.patch("/profile/{id}")
+async def update_status(id: int, request : schemas.UserStatus, db: Session = Depends(database.get_db), current_user: schemas.User = Depends(oauth2.get_current_user)):
+    user = db.query(models.User).filter(models.User.user_id == id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.status = request.status
+    db.commit()
     return 'ok'
