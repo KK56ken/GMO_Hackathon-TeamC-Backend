@@ -10,9 +10,11 @@ async def get_task_list(db: Session = Depends(database.get_db), current_user: sc
     tasks = []
     for tmp_task in tmp_tasks:
         user_name = str(db.query(models.User.name).filter(models.User.user_id == tmp_task.user_id).first())
-        skill_set_id = db.query(models.UsersSkill.skill_id).filter(models.TasksSkill.task_id == tmp_task.task_id).all()
-        skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(skill_set_id)).all()
-        task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user_name, skill_set=skill_set, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
+        skill_set_id = db.query(models.TasksSkill.skill_id).filter(models.TasksSkill.task_id == tmp_task.task_id).all()
+        flat_skill_ids = [item[0] for item in skill_set_id]
+        skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
+        flat_task_skill = [item[0] for item in skill_set]
+        task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user_name, skill_set=flat_task_skill, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
     return tasks
 
