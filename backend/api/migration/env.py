@@ -7,7 +7,7 @@ from alembic import context
 # 追加
 from database import Base
 # 追加
-from models import User
+from models import User, Task, Skill, Department
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
