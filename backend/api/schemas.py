@@ -87,6 +87,13 @@ class UpdateProfile(BaseModel):
     skill_set: Optional[List[int]] = None
     slack_id: Optional[str] = None
 
+class UpdateTask(BaseModel):
+    title: Optional[str] = None
+    skill_set: Optional[List[int]] = None
+    task_detail: Optional[str] = None
+    concern_desc: Optional[str] = None
+    ticket_link: Optional[str] = None
+
 # class Users(BaseModel):
 #     user_id: int
 #     name: str

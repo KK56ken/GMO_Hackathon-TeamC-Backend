@@ -55,3 +55,16 @@ async def delete_task(id:int, db: Session = Depends(database.get_db), current_us
     db.commit()
     db.close()
     return {"message": "Task deleted"}
+
+@router.patch("/task/{id}")
+async def update_task(id:int, request: schemas.UpdateTask, db: Session = Depends(database.get_db), current_user: dict = Depends(oauth2.get_current_user)):
+    task = db.query(models.Task).filter(models.Task.task_id == id).first()
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if task.user_id != current_user.user_id:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    for field, value in request.model_dump(exclude_unset=True).items():
+        setattr(task, field, value)
+    db.commit()
+    db.refresh(task)
+    return 'ok'
