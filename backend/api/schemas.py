@@ -61,7 +61,7 @@ class ChangeProfile(BaseModel):
     user_name:str
     status:int
     department_id: int
-    slack_id: int
+    slack_id: str
     skill_set: List[int]
 
 class Token(BaseModel):
