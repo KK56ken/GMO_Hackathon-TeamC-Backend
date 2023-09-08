@@ -14,7 +14,8 @@ async def show_all_users(db: Session = Depends(database.get_db), current_user: d
         raise HTTPException(status_code=404, detail="User not found")
     for user in tmp_users:
         titles = db.query(models.Task.title).filter(models.Task.user_id == user.user_id).all()
-        tmp_showuser = schemas.ShowUser(user_id=user.user_id, user_name=user.name, status=user.status, tasks=titles)
+        titles_lst = [item[0] for item in titles]
+        tmp_showuser = schemas.ShowUser(user_id=user.user_id, user_name=user.name, status=user.status, tasks=titles_lst)
         users.append(tmp_showuser)
     return users
 
