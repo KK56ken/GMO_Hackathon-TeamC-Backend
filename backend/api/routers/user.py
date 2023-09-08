@@ -77,10 +77,11 @@ async def get_myprofile(db: Session = Depends(database.get_db), current_user: di
         raise HTTPException(status_code=404, detail="User not found")
     skill_set_id = db.query(models.UsersSkill.skill_id).filter(models.UsersSkill.user_id == current_user.user_id).all()
     flat_skill_ids = [item[0] for item in skill_set_id]
-    skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
-    flat_skill_set = [item[0] for item in skill_set]
+    skill_name = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
+    flat_skill_name = [item[0] for item in skill_name]
+    skill_set = [{"skill_name": flat_skill_name[i], "skill_id": flat_skill_ids[i]} for i in range(len(flat_skill_name))]
     department_query = db.query(models.Department.department_name).filter(models.Department.department_id == user.department_id).first()
-    department = department_query[0]
+    department = {"department_id" : user.department_id, "department_name" : department_query[0]}
     temp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).filter(models.Task.user_id == current_user.user_id).all()
     tasks = []
     for tmp_task in temp_tasks:
@@ -90,4 +91,4 @@ async def get_myprofile(db: Session = Depends(database.get_db), current_user: di
         flat_task_skill = [item[0] for item in task_skill]
         task = schemas.Task(task_id=tmp_task.task_id, title=tmp_task.title, user_name=user.name, skill_set=flat_task_skill, task_date=tmp_task.register_date, concern_desc=tmp_task.concern_desc)
         tasks.append(task)
-    return {"name": user.name, "department": str(department), "skill_set": flat_skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
+    return {"user_id" : current_user.user_id, "name": user.name, "department": department, "skill_set": skill_set, "slack_id": user.slack_id, "status": user.status, "tasks": tasks}
