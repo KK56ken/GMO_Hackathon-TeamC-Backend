@@ -9,7 +9,8 @@ async def get_task_list(db: Session = Depends(database.get_db), current_user: sc
     tmp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).all()
     tasks = []
     for tmp_task in tmp_tasks:
-        user_name = str(db.query(models.User.name).filter(models.User.user_id == tmp_task.user_id).first())
+        user_name_query = db.query(models.User.name).filter(models.User.user_id == tmp_task.user_id).first()
+        user_name = user_name_query[0]
         skill_set_id = db.query(models.TasksSkill.skill_id).filter(models.TasksSkill.task_id == tmp_task.task_id).all()
         flat_skill_ids = [item[0] for item in skill_set_id]
         skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
