@@ -28,7 +28,7 @@ async def get_profile(id: int, db: Session = Depends(database.get_db), current_u
     flat_skill_ids = [item[0] for item in skill_set_id]
     skill_set = db.query(models.Skill.skill_name).filter(models.Skill.skill_id.in_(flat_skill_ids)).all()
     flat_skill_set = [item[0] for item in skill_set]
-    department = db.query(models.Department.department_name).filter(models.Department.department_id == user.department_id).first()
+    department = (db.query(models.Department.department_name).filter(models.Department.department_id == user.department_id).first())[0]
    
     temp_tasks = db.query(models.Task.task_id, models.Task.title, models.Task.user_id, models.Task.register_date, models.Task.concern_desc).filter(models.Task.user_id == id).all()
     tasks = []
